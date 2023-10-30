@@ -12,26 +12,30 @@ def verificar_porta(host, porta, portas_abertas, portas_fechadas):
         portas_fechadas.append(porta)
         print(f"A porta {porta} está fechada")
 
+def registrar_log(portas_abertas, portas_fechadas):
+    with open("log.txt", "w", encoding='utf-8') as arquivo_log:
+        arquivo_log.write(f"Portas abertas: {', '.join(map(str, portas_abertas))}\n")
+        arquivo_log.write(f"Portas fechadas: {', '.join(map(str, portas_fechadas))}\n")
+        arquivo_log.write(f"Número de portas abertas: {len(portas_abertas)}\n")
+        arquivo_log.write(f"Número de portas fechadas {len(portas_fechadas)}")
+        arquivo_log.close()
+
 def principal():
-    host = input("Digite o endereço IP do host: ")
-    porta_inicial = int(input("Digite o número da porta inicial: "))
-    porta_final = int(input("Digite o número da porta final: "))
+    host = input("Digite o endereço IP do host a ser verificado: ")
+    porta_inicial = int(input("Digite o número da porta de início: "))
+    porta_final = int(input("Digite o número da porta de término: "))
+    
     portas_abertas = []
     portas_fechadas = []
 
     for porta in range(porta_inicial, porta_final + 1):
         verificar_porta(host, porta, portas_abertas, portas_fechadas)
 
-    with open("resultado.log", "w", encoding='utf-8') as output:
-        print("Portas abertas:", end=" ", file=output)
-        for porta in portas_abertas:
-            print(porta, end=", ", file=output)
-        print("\nPortas fechadas:", end=" ", file=output)
-        for porta in portas_fechadas:
-            print(porta, end=", ", file=output)
-        print("", file=output)
-        print(f"Número de portas abertas: {len(portas_abertas)}", file=output)
-        print(f"Número de portas fechadas: {len(portas_fechadas)}", file=output)
+    print(f"Portas abertas: {', '.join(map(str, portas_abertas))}")
+    print(f"Portas fechadas: {', '.join(map(str, portas_fechadas))}")
+
+    registrar_log(portas_abertas, portas_fechadas)
+    print("Resultados registrados em 'log.txt'.")
 
 if __name__ == "__main__":
     principal()
