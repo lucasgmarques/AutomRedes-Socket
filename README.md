@@ -1,0 +1,1 @@
+# AutomRedes-Socket
