@@ -1,37 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import socket
 
-SERVERHOST = 'localhost'
-SERVERPORT = 9472
-
-def create_socket(host, port):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((host, port))
-
-    return client_socket
+import network
 
 def send_message(client_socket):
-    msg= input("Digite aqui a sua mensagem: ")
+    try:
+        msg= input("Digite aqui a sua mensagem (ou 'f' para fim) :")
 
-    while msg.lower() != 'tchau':
-        client_socket.send(msg.encode())
-        data = client_socket.recv(1024).decode()
+        while msg.strip().lower() != 'f':
+            client_socket.send(msg.encode())
+            data = client_socket.recv(1024).decode()
 
-        print(f"[Servidor]: {data}")
+            print(f"[Servidor] diz: {data}")
 
-        msg = input(" --> ")
+            msg = input(" --> ")
+    except Exception as e:
+        print(f"Erro durante a comunicação: {e}")
+    finally:
+        print("Finalizando a conexão.")
+        client_socket.close()
 
 def main():
-
-    client_socket = create_socket(SERVERHOST, SERVERPORT)
-    send_message(client_socket)
-
-    print("Finalizando a conexão!")
-    client_socket.close()
-
-if __name__ == "__main__":
+    host, port = network.set_host_port()
+    client_socket = network.create_socket_client(host, port)
+    
     try:
-        main()
+        send_message(client_socket)
     except KeyboardInterrupt:
         print("você interrompeu o programa.")
+    except Exception as e:
+        print(f"Erro durante a execução: {e}")
+
+if __name__ == "__main__":
+    main()
